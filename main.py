@@ -7,3 +7,8 @@ app = FastAPI()
 async def read_payload(req: Request):
     req_obj = await req.json()
     return {"Hello": "World"}
+
+@app.post("/")
+async def read_root_hook(req: Request):
+    req_obj = await req.json()
+    return {"Hello": "World"}
