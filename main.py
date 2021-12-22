@@ -10,15 +10,18 @@ from validators import validate_secret, validate_sender
 validators = [validate_secret, validate_sender]
 app = FastAPI()
 
-LOG_FILEPATH = environ.get('LOG_FILEPATH') or './webhook.log'
-logger.add(LOG_FILEPATH,
-           format='[{level}]\t{name}:{function}:{line}\t{message}')
+LOG_FILEPATH = environ.get('LOG_FILEPATH')
+if LOG_FILEPATH:
+    logger.add(
+        LOG_FILEPATH,
+        format='[{level}]\t{name}:{function}:{line}\t{message}',
+    )
 
 GIT_REPOPATH = environ.get('GIT_REPOPATH') or '/tmp/airflow-jobs-repo'
 GIT_REPO_URL = environ.get(
     'GIT_REPO_URL', ) or 'https://github.com/fivestarsky/airflow-jobs'
 AIRFLOW_DAGS_PATH = environ.get(
-    'LOG_FILEPATH', ) or '/mnt/nfs4_share/airflow-pvs/dags'
+    'AIRFLOW_DAGS_PATH', ) or '/mnt/nfs4_share/airflow-pvs/dags'
 
 
 @app.post("/")

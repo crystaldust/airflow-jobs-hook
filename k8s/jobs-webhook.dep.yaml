@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jobs-webhook
+spec:
+  selector:
+    matchLabels:
+      app: jobs-webhook
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: jobs-webhook
+    spec:
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: workingnode
+      #           operator: In
+      #           values: ["true"]
+      containers:
+      - name: jobs-webhook
+        image: airflowjobs/jobs-webhook:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        env:
+        - name: GIT_REPOPATH
+          value: "/tmp/airflow-jobs-repo"
+        - name: GIT_REPO_URL
+          value: "https://github.com/fivestarsky/airflow-jobs"
+        - name: LOGURU_LEVEL
+          value: "INFO"
+        - name: GITHUB_WEBHOOK_SECRET
+          value: "YOUR_GITHUB_WEBHOOK_SECRET"
+        - name: AIRFLOW_DAGS_PATH
+          value: "YOUR_DAGS_DST_PATH"

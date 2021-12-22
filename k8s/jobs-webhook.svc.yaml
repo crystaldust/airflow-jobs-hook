@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jobs-webhook
+  labels:
+    run: jobs-webhook
+spec:
+  ports:
+  - port: 6201
+    targetPort: 8000
+    protocol: TCP
+  # externalIPs:
+  #   - 192.168.8.10
+
+  selector:
+    app: jobs-webhook

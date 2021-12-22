@@ -3,9 +3,11 @@ RUN git clone https://github.com/crystaldust/airflow-jobs-hook.git /airflow-jobs
 
 
 FROM python:3.8-alpine
+RUN apk add git
+
 COPY --from=0 /airflow-jobs-hook /airflow-jobs-hook
 WORKDIR /airflow-jobs-hook
 RUN pip install -r ./requirements.txt
 
-CMD ["uvicorn main:app"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]
 
