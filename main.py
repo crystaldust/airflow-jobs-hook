@@ -45,10 +45,10 @@ async def read_root_hook(req: Request):
     origin.pull()
     # TODO shutil doesn't provide 'overwrite' features for now
     # Delete the destination and copy dags to it
-    shutil.rmtree(AIRFLOW_DAGS_PATH)
+    #  shutil.rmtree(AIRFLOW_DAGS_PATH)
     shutil.copytree(
         f'{GIT_REPOPATH}/dags',
         AIRFLOW_DAGS_PATH,
-        #  dirs_exist_ok=True,
+        dirs_exist_ok=True,
     )
     return ""
