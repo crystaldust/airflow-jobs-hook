@@ -27,8 +27,6 @@ AIRFLOW_DAGS_PATH = environ.get(
 @app.post("/")
 async def read_root_hook(req: Request):
     for validator in validators:
-        #  is_valid = await validator(req)
-        #  if not is_valid:
         if not await validator(req):
             logger.error(f'Failed to validate request: {validator.__name__}')
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
@@ -44,8 +42,6 @@ async def read_root_hook(req: Request):
     origin = repo.remote('origin')
     origin.pull()
     # TODO shutil doesn't provide 'overwrite' features for now
-    # Delete the destination and copy dags to it
-    #  shutil.rmtree(AIRFLOW_DAGS_PATH)
     shutil.copytree(
         f'{GIT_REPOPATH}/dags',
         AIRFLOW_DAGS_PATH,
