@@ -1,8 +1,10 @@
 import hashlib
 import hmac
-import os
+from os import environ
+from loguru import logger
 
-GITHUB_WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET') or ''
+GITHUB_WEBHOOK_SECRET = environ.get('GITHUB_WEBHOOK_SECRET') or ''
+TARGET_BRANCH = environ.get('TARGET_BRANCH')
 
 
 def gen_signature(payload):
@@ -25,3 +27,25 @@ async def validate_secret(req):
 
 async def validate_sender(req):
     return True
+
+
+async def validate_branch(req):
+    # When target branch not set, pull the default branch
+    if not TARGET_BRANCH:
+        return True
+
+    payload = await req.json()
+    logger.debug(payload)
+    if 'ref' not in payload:
+        logger.error('ref not in payload')
+        return False
+
+    ref = payload['ref']
+    try:
+        # A normal ref looks like this:
+        # refs/heads/development
+        branch = ref.split('/')[-1]
+        return branch == TARGET_BRANCH
+    except BaseException as e:
+        logger.error(f'Failed to parse ref: {ref}, {type(e)}, {e}')
+        return False

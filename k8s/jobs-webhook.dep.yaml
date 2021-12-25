@@ -31,6 +31,8 @@ spec:
           value: "/tmp/airflow-jobs-repo"
         - name: GIT_REPO_URL
           value: "https://github.com/fivestarsky/airflow-jobs"
+        - name: TARGET_BRANCH
+          value: "development"
         - name: LOGURU_LEVEL
           value: "INFO"
         - name: GITHUB_WEBHOOK_SECRET
