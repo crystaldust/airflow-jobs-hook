@@ -40,10 +40,12 @@ async def read_root_hook(req: Request):
         repo = Repo.clone_from(GIT_REPO_URL, GIT_REPOPATH)
 
     origin = repo.remote('origin')
-    origin.pull()
+    pull_kargs = []
     if TARGET_BRANCH:
         logger.info(f'Checkout to branch {TARGET_BRANCH}')
-        repo.git.checkout('HEAD', b=TARGET_BRANCH)
+        repo.git.checkout(TARGET_BRANCH)
+        pull_kargs.append(TARGET_BRANCH)
+    origin.pull(*pull_kargs)
     # TODO shutil doesn't provide 'overwrite' features for now
     shutil.copytree(
         f'{GIT_REPOPATH}/dags',
