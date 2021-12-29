@@ -1,5 +1,5 @@
 import shutil
-from os import environ, path
+from os import environ, listdir, path, remove
 
 from fastapi import FastAPI, HTTPException, Request, status
 from git import Git, Repo
@@ -47,6 +47,13 @@ async def read_root_hook(req: Request):
         pull_kargs.append(TARGET_BRANCH)
     origin.pull(*pull_kargs)
     # TODO shutil doesn't provide 'overwrite' features for now
+    for file_path in listdir(AIRFLOW_DAGS_PATH):
+        p = path.join(AIRFLOW_DAGS_PATH, file_path)
+        try:
+            shutil.rmtree(p)
+        except OSError:
+            remove(p)
+
     shutil.copytree(
         f'{GIT_REPOPATH}/dags',
         AIRFLOW_DAGS_PATH,
